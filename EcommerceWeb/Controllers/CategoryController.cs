@@ -30,6 +30,11 @@ public class CategoryController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(Category obj)
     {
+        if (await _context.Categories.AnyAsync(x => x.DisplayOrder == obj.DisplayOrder))
+        {
+            ModelState.AddModelError("DisplayOrder", "Display Order already exists");
+        }
+
         if (ModelState.IsValid)
         {
             await _context.Categories.AddAsync(obj);
