@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EcommerceWEB.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240123111035_SeedCategoryTable")]
-    partial class SeedCategoryTable
+    [Migration("20240130162007_SeedingDataToDatabase")]
+    partial class SeedingDataToDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,15 +25,16 @@ namespace EcommerceWEB.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EcommerceWeb.Models.Category", b =>
+            modelBuilder.Entity("EcommerceWEB.Models.Models.Category", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CatergoryName")
+                    b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
@@ -45,20 +46,20 @@ namespace EcommerceWEB.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4c951be7-fb69-49b2-b9b2-4d585ce967e4"),
-                            CatergoryName = "Action",
+                            Id = new Guid("5a13196b-bd85-4e02-83ea-67fa1896b75d"),
+                            CategoryName = "Action",
                             DisplayOrder = 1
                         },
                         new
                         {
-                            Id = new Guid("47da6937-10db-42e2-9e30-124e336ea6fb"),
-                            CatergoryName = "SciFi",
+                            Id = new Guid("56f9a9c9-5966-4dee-8c59-af196da962d7"),
+                            CategoryName = "SciFi",
                             DisplayOrder = 2
                         },
                         new
                         {
-                            Id = new Guid("5c9914ad-68c2-4c3f-8acd-b66ae429f7fe"),
-                            CatergoryName = "History",
+                            Id = new Guid("fc2f05fe-f484-4b63-b222-62a9a6560cb6"),
+                            CategoryName = "History",
                             DisplayOrder = 3
                         });
                 });

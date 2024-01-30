@@ -3,13 +3,13 @@ using EcommerceWEB.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace EcommerceWeb.Controllers;
+namespace EcommerceWeb.Areas.Admin.Controllers;
 
 public class CategoryController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public CategoryController(IUnitOfWork unitOfWork) 
+    public CategoryController(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
@@ -30,6 +30,11 @@ public class CategoryController : Controller
     [HttpPost]
     public IActionResult Create(Category obj)
     {
+        if (_unitOfWork.CategoryRepository.GetAll().Any(x => x.CategoryName.Equals(obj.CategoryName, StringComparison.CurrentCultureIgnoreCase)))
+        {
+            ModelState.AddModelError("CategoryName", "Category Name already exists");
+        }
+
         if (_unitOfWork.CategoryRepository.GetAll().Any(x => x.DisplayOrder == obj.DisplayOrder))
         {
             ModelState.AddModelError("DisplayOrder", "Display Order already exists");
@@ -67,6 +72,11 @@ public class CategoryController : Controller
 
         if (existingCategory != null)
         {
+            if (_unitOfWork.CategoryRepository.GetAll().Any(x => x.CategoryName.Equals(obj.CategoryName, StringComparison.CurrentCultureIgnoreCase) && x.Id != obj.Id))
+            {
+                ModelState.AddModelError("CategoryName", "Category Name already exists");
+            }
+
             if (_unitOfWork.CategoryRepository.GetAll().Any(x => x.DisplayOrder == obj.DisplayOrder && x.Id != obj.Id))
             {
                 ModelState.AddModelError("DisplayOrder", "Display Order already exists");
@@ -74,7 +84,7 @@ public class CategoryController : Controller
 
             if (ModelState.IsValid)
             {
-                existingCategory.CatergoryName = obj.CatergoryName;
+                existingCategory.CategoryName = obj.CategoryName;
                 existingCategory.DisplayOrder = obj.DisplayOrder;
                 _unitOfWork.Save();
                 TempData["success"] = "Category Updated Successfully!";
@@ -87,7 +97,7 @@ public class CategoryController : Controller
     #endregion
 
     #region Delete Category
-    public  ActionResult Delete(Guid id)
+    public ActionResult Delete(Guid id)
     {
         Category category = _unitOfWork.CategoryRepository.GetById(x => x.Id == id);
 

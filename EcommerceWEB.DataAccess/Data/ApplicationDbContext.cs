@@ -15,10 +15,9 @@ public class ApplicationDbContext :DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>().HasData(
-            new Category { Id = Guid.NewGuid(), CatergoryName = "Action", DisplayOrder = 1 },
-            new Category { Id = Guid.NewGuid(), CatergoryName = "SciFi", DisplayOrder = 2 },
-            new Category { Id = Guid.NewGuid(), CatergoryName = "History", DisplayOrder = 3 }
-
+            new Category { Id = Guid.NewGuid(), CategoryName = "Action", DisplayOrder = 1 },
+            new Category { Id = Guid.NewGuid(), CategoryName = "SciFi", DisplayOrder = 2 },
+            new Category { Id = Guid.NewGuid(), CategoryName = "History", DisplayOrder = 3 }
             );
     }
 }

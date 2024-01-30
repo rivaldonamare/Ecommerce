@@ -28,7 +28,7 @@ namespace EcommerceWEB.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CatergoryName")
+                    b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
@@ -43,20 +43,20 @@ namespace EcommerceWEB.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("aa495720-ee02-4f1b-af24-a91e3ad6573f"),
-                            CatergoryName = "Action",
+                            Id = new Guid("5a13196b-bd85-4e02-83ea-67fa1896b75d"),
+                            CategoryName = "Action",
                             DisplayOrder = 1
                         },
                         new
                         {
-                            Id = new Guid("f08a733e-62a9-4405-b592-4382a9d5e29f"),
-                            CatergoryName = "SciFi",
+                            Id = new Guid("56f9a9c9-5966-4dee-8c59-af196da962d7"),
+                            CategoryName = "SciFi",
                             DisplayOrder = 2
                         },
                         new
                         {
-                            Id = new Guid("6770dd02-f8ec-461a-b11a-7f75ee499069"),
-                            CatergoryName = "History",
+                            Id = new Guid("fc2f05fe-f484-4b63-b222-62a9a6560cb6"),
+                            CategoryName = "History",
                             DisplayOrder = 3
                         });
                 });
