@@ -1,32 +1,45 @@
 ﻿@model Category
 
-<form method="post">
-    <div class="border p-3 mt-4">
-        <div class="row pb-2">
-            <h2 class="text-primary">Edit Category</h2>
-            <hr />
-        </div>
-        <div class="mb-3">
-            <label asp-for=CatergoryName class="pb-3"></label>
-            <input asp-for="CatergoryName" class="form-control" />
-            <span asp-validation-for="CatergoryName" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="DisplayOrder" class="pb-3"></label>
-            <input asp-for="DisplayOrder" class="form-control" />
-            <span asp-validation-for="DisplayOrder" class="text-danger"></span>
-        </div>
 
+<div class="card-shadow border-0 mt-4">
+    <div class="card-header bg-primary bg-gradient ml-0 py-3">
         <div class="row">
-            <div class="mb-3 col-md-6">
-                <button type="submit" class="btn btn-success form-control">Update</button>
-            </div>
-            <div class="mb-3 col-md-6">
-                <a asp-controller="Category" asp-action="Index" class="btn btn-secondary form-control">Back to Category List</a>
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Edit Category</h2>
             </div>
         </div>
     </div>
-</form>
+    <div class="card-body p-4">
+        <form method="post">
+            <div class="border p-3 mt-4">
+                <div class="row pb-2">
+                    <hr />
+                </div>
+                <div class="mb-3">
+                    <label asp-for=CatergoryName class="pb-3"></label>
+                    <input asp-for="CatergoryName" class="form-control" />
+                    <span asp-validation-for="CatergoryName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="DisplayOrder" class="pb-3"></label>
+                    <input asp-for="DisplayOrder" class="form-control" />
+                    <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="mb-3 col-md-6">
+                        <button type="submit" class="btn btn-success form-control">Update</button>
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <a asp-controller="Category" asp-action="Index" class="btn btn-secondary form-control">Back to Category List</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 
 @section Scripts {
     @{

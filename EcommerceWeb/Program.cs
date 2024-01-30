@@ -1,4 +1,6 @@
-using EcommerceWeb.Data;
+using EcommerceWEB.DataAccess.Data;
+using EcommerceWEB.DataAccess.Repository;
+using EcommerceWEB.DataAccess.Repository.IRepo;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,8 @@ builder.Services.AddControllersWithViews();
 
 //Configure DbContext to ApplicationDbContext and set sqlServer as Database then set connection strings
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 
@@ -28,6 +32,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area:Customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
