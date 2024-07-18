@@ -24,9 +24,11 @@ namespace EcommerceWEB.DataAccess.Migrations
 
             modelBuilder.Entity("EcommerceWEB.Models.Models.Category", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
@@ -43,19 +45,19 @@ namespace EcommerceWEB.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a4309ab5-f239-424a-a654-f17619a64f2f"),
+                            Id = 1,
                             CategoryName = "Action",
                             DisplayOrder = 1
                         },
                         new
                         {
-                            Id = new Guid("05005024-413e-4785-b3e8-b2f0b9964a3a"),
+                            Id = 2,
                             CategoryName = "SciFi",
                             DisplayOrder = 2
                         },
                         new
                         {
-                            Id = new Guid("af0f0c88-29c1-4f66-8314-42f927d68cfe"),
+                            Id = 3,
                             CategoryName = "History",
                             DisplayOrder = 3
                         });
@@ -71,11 +73,18 @@ namespace EcommerceWEB.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ISBN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -98,15 +107,19 @@ namespace EcommerceWEB.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Products");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ca830044-ca89-4770-8a55-2cbb1c796012"),
+                            Id = new Guid("2d861ac6-cc60-473b-86f3-b81dd849f62f"),
                             Author = "Billy Spark",
+                            CategoryId = 1,
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "SWD9999001",
+                            ImageUrl = "",
                             ListPrice = 99.0,
                             Price = 90.0,
                             Price100 = 80.0,
@@ -115,10 +128,12 @@ namespace EcommerceWEB.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e3271849-04dd-496c-82fd-b2a16231d8a0"),
+                            Id = new Guid("4b33cf4d-f683-4e33-8e17-eb0fb7dddc89"),
                             Author = "Nancy Hoover",
+                            CategoryId = 2,
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "CAW777777701",
+                            ImageUrl = "",
                             ListPrice = 40.0,
                             Price = 30.0,
                             Price100 = 20.0,
@@ -127,52 +142,29 @@ namespace EcommerceWEB.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e3773032-6bca-4585-b408-f7bc2b05f9f5"),
+                            Id = new Guid("6ea7eddf-2e71-4e8e-8170-6dbca2351fc3"),
                             Author = "Julian Button",
+                            CategoryId = 3,
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "RITO5555501",
+                            ImageUrl = "",
                             ListPrice = 55.0,
                             Price = 50.0,
                             Price100 = 35.0,
                             Price50 = 40.0,
                             Title = "Vanish in the Sunset"
-                        },
-                        new
-                        {
-                            Id = new Guid("2b63e3cc-d399-4add-8473-d8e02ebbb1ca"),
-                            Author = "Abby Muscles",
-                            Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
-                            ISBN = "WS3333333301",
-                            ListPrice = 70.0,
-                            Price = 65.0,
-                            Price100 = 55.0,
-                            Price50 = 60.0,
-                            Title = "Cotton Candy"
-                        },
-                        new
-                        {
-                            Id = new Guid("75241894-43aa-4489-81d1-28a6a98e0e19"),
-                            Author = "Ron Parker",
-                            Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
-                            ISBN = "SOTJ1111111101",
-                            ListPrice = 30.0,
-                            Price = 27.0,
-                            Price100 = 20.0,
-                            Price50 = 25.0,
-                            Title = "Rock in the Ocean"
-                        },
-                        new
-                        {
-                            Id = new Guid("d14c4706-42e4-497e-af57-c7d39e6c88e5"),
-                            Author = "Laura Phantom",
-                            Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
-                            ISBN = "FOT000000001",
-                            ListPrice = 25.0,
-                            Price = 23.0,
-                            Price100 = 20.0,
-                            Price50 = 22.0,
-                            Title = "Leaves and Wonders"
                         });
+                });
+
+            modelBuilder.Entity("EcommerceWEB.Models.Models.Product", b =>
+                {
+                    b.HasOne("EcommerceWEB.Models.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }

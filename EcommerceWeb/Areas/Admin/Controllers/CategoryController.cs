@@ -54,7 +54,7 @@ public class CategoryController : Controller
     #endregion
 
     #region Update Category
-    public ActionResult Update(Guid id)
+    public ActionResult Update(int id)
     {
         Category category = _unitOfWork.CategoryRepository.GetById(x => x.Id == id);
 
@@ -97,7 +97,7 @@ public class CategoryController : Controller
     #endregion
 
     #region Delete Category
-    public ActionResult Delete(Guid id)
+    public ActionResult Delete(int id)
     {
         Category category = _unitOfWork.CategoryRepository.GetById(x => x.Id == id);
 

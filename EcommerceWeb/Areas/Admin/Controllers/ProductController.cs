@@ -1,16 +1,20 @@
 ﻿using EcommerceWEB.DataAccess.Repository.IRepo;
 using EcommerceWEB.Models.Models;
+using EcommerceWEB.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EcommerceWeb.Areas.Admin.Controllers;
 
 public class ProductController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public ProductController(IUnitOfWork unitOfWork)
+    public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
     }
 
 
@@ -22,71 +26,60 @@ public class ProductController : Controller
     }
     #endregion
 
-    #region Create Product
-    public IActionResult Create()
+    #region Update Insert Product
+    public IActionResult Upsert(Guid? id)
     {
-        return View();
+        ProductVM productVM = new()
+        {
+            CategoryList = _unitOfWork.CategoryRepository
+            .GetAll().Select(x => new SelectListItem
+            {
+                Text = x.CategoryName,
+                Value = x.Id.ToString()
+            }),
+
+            Product = new Product()
+        };
+
+        if (id == null)
+        {
+            return View(productVM);
+        }
+        else
+        {
+            productVM.Product = _unitOfWork.ProductRepository.GetById(x => x.Id == id);
+            return View(productVM);
+        }
     }
+
     [HttpPost]
-    public IActionResult Create(Product obj)
+    public IActionResult Upsert(ProductVM obj, IFormFile? file)
     {
-        if (_unitOfWork.ProductRepository.GetAll().Any(x => x.Title.Equals(obj.Title, StringComparison.CurrentCultureIgnoreCase)))
+        if (_unitOfWork.ProductRepository.GetAll().Any(x => x.Title.Equals(obj.Product.Title, StringComparison.CurrentCultureIgnoreCase)))
         {
             ModelState.AddModelError("Title", "Title already exists");
         }
 
         if (ModelState.IsValid)
         {
-            _unitOfWork.ProductRepository.Add(obj);
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            if (file != null)
+            {
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string productPath = Path.Combine(wwwRootPath, @"images\product\");
+
+                using (var fileStream = new FileStream(Path.Combine(productPath, fileName),FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+
+                obj.Product.ImageUrl = @"images\product\" + fileName;
+            }
+
+            _unitOfWork.ProductRepository.Add(obj.Product);
             _unitOfWork.Save();
             TempData["success"] = "Product Created Successfully!";
             return RedirectToAction("Index");
-        }
-
-        return View();
-    }
-    #endregion
-
-    #region Update Product
-    public ActionResult Update(Guid id)
-    {
-        Product product = _unitOfWork.ProductRepository.GetById(x => x.Id == id);
-
-        if (product == null)
-        {
-            return NotFound();
-        }
-
-        return View(product);
-    }
-    [HttpPost]
-    public IActionResult Update(Product obj)
-    {
-        var existingProduct = _unitOfWork.ProductRepository.GetById(x => x.Id == obj.Id);
-
-        if (existingProduct != null)
-        {
-            if (_unitOfWork.ProductRepository.GetAll().Any(x => x.Title.Equals(obj.Title, StringComparison.CurrentCultureIgnoreCase) && x.Id != obj.Id))
-            {
-                ModelState.AddModelError("Title", "Title already exists");
-            }
-
-            if (ModelState.IsValid)
-            {
-                existingProduct.Title = obj.Title;
-                existingProduct.Description = obj.Description;
-                existingProduct.ISBN = obj.ISBN;
-                existingProduct.Author = obj.Author;
-                existingProduct.ListPrice = obj.ListPrice;
-                existingProduct.Price = obj.Price;
-                existingProduct.Price50 = obj.Price50;
-                existingProduct.Price100 = obj.Price100;
-
-
-                _unitOfWork.Save();
-                TempData["success"] = "Product Updated Successfully!";
-                return RedirectToAction("Index");
-            }
         }
 
         return View();

@@ -6,7 +6,7 @@ namespace EcommerceWEB.Models.Models;
 public class Category
 {
     [Key]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [MaxLength(20)]
