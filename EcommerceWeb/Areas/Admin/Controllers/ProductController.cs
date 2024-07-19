@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EcommerceWeb.Areas.Admin.Controllers;
-
+[Area("Admin")]
 public class ProductController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -51,7 +51,7 @@ public class ProductController : Controller
     [HttpPost]
     public IActionResult Upsert(ProductVM obj, IFormFile file)
     {
-        if (_unitOfWork.ProductRepository.GetAll(null).Any(x => x.Title.Equals(obj.Product.Title, StringComparison.CurrentCultureIgnoreCase)))
+        if (_unitOfWork.ProductRepository.GetAll(null).Any(x => x.Id != obj.Product.Id && x.Title.Equals(obj.Product.Title, StringComparison.CurrentCultureIgnoreCase)))
         {
             ModelState.AddModelError("Title", "Title already exists");
         }

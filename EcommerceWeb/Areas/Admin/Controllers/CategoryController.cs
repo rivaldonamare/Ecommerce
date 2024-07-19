@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace EcommerceWeb.Areas.Admin.Controllers;
-
+[Area("Admin")]
 public class CategoryController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -30,7 +30,7 @@ public class CategoryController : Controller
     [HttpPost]
     public IActionResult Create(Category obj)
     {
-        if (_unitOfWork.CategoryRepository.GetAll(null).Any(x => x.CategoryName.Equals(obj.CategoryName, StringComparison.CurrentCultureIgnoreCase)))
+        if (_unitOfWork.CategoryRepository.GetAll(null).Any(x => x.Id != obj.Id && x.CategoryName.Equals(obj.CategoryName, StringComparison.CurrentCultureIgnoreCase)))
         {
             ModelState.AddModelError("CategoryName", "Category Name already exists");
         }
