@@ -17,7 +17,7 @@ public class CategoryController : Controller
     #region Fetch Category
     public IActionResult Index()
     {
-        List<Category> objCatergoryList = _unitOfWork.CategoryRepository.GetAll().OrderBy(x => x.DisplayOrder).ToList();
+        List<Category> objCatergoryList = _unitOfWork.CategoryRepository.GetAll(null).OrderBy(x => x.DisplayOrder).ToList();
         return View(objCatergoryList);
     }
     #endregion
@@ -30,12 +30,12 @@ public class CategoryController : Controller
     [HttpPost]
     public IActionResult Create(Category obj)
     {
-        if (_unitOfWork.CategoryRepository.GetAll().Any(x => x.CategoryName.Equals(obj.CategoryName, StringComparison.CurrentCultureIgnoreCase)))
+        if (_unitOfWork.CategoryRepository.GetAll(null).Any(x => x.CategoryName.Equals(obj.CategoryName, StringComparison.CurrentCultureIgnoreCase)))
         {
             ModelState.AddModelError("CategoryName", "Category Name already exists");
         }
 
-        if (_unitOfWork.CategoryRepository.GetAll().Any(x => x.DisplayOrder == obj.DisplayOrder))
+        if (_unitOfWork.CategoryRepository.GetAll(null).Any(x => x.DisplayOrder == obj.DisplayOrder))
         {
             ModelState.AddModelError("DisplayOrder", "Display Order already exists");
         }
@@ -56,7 +56,7 @@ public class CategoryController : Controller
     #region Update Category
     public ActionResult Update(int id)
     {
-        Category category = _unitOfWork.CategoryRepository.GetById(x => x.Id == id);
+        Category category = _unitOfWork.CategoryRepository.GetById(x => x.Id == id, includeProperties: "Category");
 
         if (category == null)
         {
@@ -68,16 +68,16 @@ public class CategoryController : Controller
     [HttpPost]
     public IActionResult Update(Category obj)
     {
-        var existingCategory = _unitOfWork.CategoryRepository.GetById(x => x.Id == obj.Id);
+        var existingCategory = _unitOfWork.CategoryRepository.GetById(x => x.Id == obj.Id, includeProperties: "Category");
 
         if (existingCategory != null)
         {
-            if (_unitOfWork.CategoryRepository.GetAll().Any(x => x.CategoryName.Equals(obj.CategoryName, StringComparison.CurrentCultureIgnoreCase) && x.Id != obj.Id))
+            if (_unitOfWork.CategoryRepository.GetAll(null).Any(x => x.CategoryName.Equals(obj.CategoryName, StringComparison.CurrentCultureIgnoreCase) && x.Id != obj.Id))
             {
                 ModelState.AddModelError("CategoryName", "Category Name already exists");
             }
 
-            if (_unitOfWork.CategoryRepository.GetAll().Any(x => x.DisplayOrder == obj.DisplayOrder && x.Id != obj.Id))
+            if (_unitOfWork.CategoryRepository.GetAll(null).Any(x => x.DisplayOrder == obj.DisplayOrder && x.Id != obj.Id))
             {
                 ModelState.AddModelError("DisplayOrder", "Display Order already exists");
             }
@@ -99,7 +99,7 @@ public class CategoryController : Controller
     #region Delete Category
     public ActionResult Delete(int id)
     {
-        Category category = _unitOfWork.CategoryRepository.GetById(x => x.Id == id);
+        Category category = _unitOfWork.CategoryRepository.GetById(x => x.Id == id, null);
 
         if (category == null)
         {

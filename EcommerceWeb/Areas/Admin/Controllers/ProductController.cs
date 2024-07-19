@@ -21,7 +21,7 @@ public class ProductController : Controller
     #region Fetch Product
     public IActionResult Index()
     {
-        List<Product> objProductList = _unitOfWork.ProductRepository.GetAll().OrderBy(x => x.Title).ToList();
+        List<Product> objProductList = _unitOfWork.ProductRepository.GetAll(includeProperties:"Category").OrderBy(x => x.Title).ToList();
         return View(objProductList);
     }
     #endregion
@@ -31,7 +31,7 @@ public class ProductController : Controller
     {
         ProductVM productVM = new()
         {
-            CategoryList = _unitOfWork.CategoryRepository.GetAll().Select(x => new SelectListItem
+            CategoryList = _unitOfWork.CategoryRepository.GetAll(null).Select(x => new SelectListItem
             {
                 Text = x.CategoryName,
                 Value = x.Id.ToString()
@@ -42,7 +42,7 @@ public class ProductController : Controller
 
         if (id.HasValue)
         {
-            productVM.Product = _unitOfWork.ProductRepository.GetById(x => x.Id == id);
+            productVM.Product = _unitOfWork.ProductRepository.GetById(x => x.Id == id, includeProperties:"Category");
         }
 
         return View(productVM);
@@ -51,7 +51,7 @@ public class ProductController : Controller
     [HttpPost]
     public IActionResult Upsert(ProductVM obj, IFormFile? file)
     {
-        if (_unitOfWork.ProductRepository.GetAll().Any(x => x.Id != obj.Product.Id && x.Title.Equals(obj.Product.Title, StringComparison.CurrentCultureIgnoreCase)))
+        if (_unitOfWork.ProductRepository.GetAll(includeProperties:"Category").Any(x => x.Id != obj.Product.Id && x.Title.Equals(obj.Product.Title, StringComparison.CurrentCultureIgnoreCase)))
         {
             ModelState.AddModelError("Title", "Title already exists");
         }
@@ -97,7 +97,7 @@ public class ProductController : Controller
             return RedirectToAction("Index");
         }
 
-        obj.CategoryList = _unitOfWork.CategoryRepository.GetAll().Select(x => new SelectListItem
+        obj.CategoryList = _unitOfWork.CategoryRepository.GetAll(includeProperties:"Category").Select(x => new SelectListItem
         {
             Text = x.CategoryName,
             Value = x.Id.ToString()
@@ -110,7 +110,7 @@ public class ProductController : Controller
     #region Delete Product
     public ActionResult Delete(Guid id)
     {
-        Product product = _unitOfWork.ProductRepository.GetById(x => x.Id == id);
+        Product product = _unitOfWork.ProductRepository.GetById(x => x.Id == id, includeProperties:"Category");
 
         if (product == null)
         {

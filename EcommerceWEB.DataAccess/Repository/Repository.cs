@@ -21,17 +21,28 @@ public class Repository<T> : IRepositroy<T> where T : class
         dbSet.Add(entity);
     }
 
-    public IEnumerable<T> GetAll()
+    public IEnumerable<T> GetAll(string includeProperties)
     {
         IQueryable<T> query = dbSet;
+
+        if (includeProperties != null)
+        {
+            return query.Include(includeProperties).ToList();
+        }
+        
         return query.ToList();
     }
 
-    public T GetById(Expression<Func<T, bool>> filter)
+    public T GetById(Expression<Func<T, bool>> filter, string includeProperties)
     {
         IQueryable<T> query = dbSet;
         query = query.Where(filter);
-        return query.SingleOrDefault();
+
+        if (includeProperties != null)
+        {
+            return query.Include(includeProperties).SingleOrDefault();
+        }
+        return query.Include(includeProperties).SingleOrDefault();
     }
 
     public void Remove(T entity)
