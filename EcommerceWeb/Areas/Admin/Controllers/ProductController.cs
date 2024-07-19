@@ -21,7 +21,7 @@ public class ProductController : Controller
     #region Fetch Product
     public IActionResult Index()
     {
-        List<Product> objProductList = _unitOfWork.ProductRepository.GetAll(includeProperties:"Category").OrderBy(x => x.Title).ToList();
+        List<Product> objProductList = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category").OrderBy(x => x.Title).ToList();
         return View(objProductList);
     }
     #endregion
@@ -42,16 +42,16 @@ public class ProductController : Controller
 
         if (id.HasValue)
         {
-            productVM.Product = _unitOfWork.ProductRepository.GetById(x => x.Id == id, includeProperties:"Category");
+            productVM.Product = _unitOfWork.ProductRepository.GetById(x => x.Id == id, includeProperties: "Category");
         }
 
         return View(productVM);
     }
 
     [HttpPost]
-    public IActionResult Upsert(ProductVM obj, IFormFile? file)
+    public IActionResult Upsert(ProductVM obj, IFormFile file)
     {
-        if (_unitOfWork.ProductRepository.GetAll(includeProperties:"Category").Any(x => x.Id != obj.Product.Id && x.Title.Equals(obj.Product.Title, StringComparison.CurrentCultureIgnoreCase)))
+        if (_unitOfWork.ProductRepository.GetAll(null).Any(x => x.Title.Equals(obj.Product.Title, StringComparison.CurrentCultureIgnoreCase)))
         {
             ModelState.AddModelError("Title", "Title already exists");
         }
@@ -97,35 +97,50 @@ public class ProductController : Controller
             return RedirectToAction("Index");
         }
 
-        obj.CategoryList = _unitOfWork.CategoryRepository.GetAll(includeProperties:"Category").Select(x => new SelectListItem
+       /* obj.CategoryList = _unitOfWork.CategoryRepository.GetAll(includeProperties: "Category").Select(x => new SelectListItem
         {
             Text = x.CategoryName,
             Value = x.Id.ToString()
-        });
+        });*/
 
         return View(obj);
     }
     #endregion
 
-    #region Delete Product
+    
+
+    #region API Calls
+    [HttpGet]
+    public ActionResult GetAll()
+    {
+        List<Product> objProductList = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category").OrderBy(x => x.Title).ToList();
+        return Json(new { data = objProductList });
+    }
+
+    [HttpDelete]
     public ActionResult Delete(Guid id)
     {
-        Product product = _unitOfWork.ProductRepository.GetById(x => x.Id == id, includeProperties:"Category");
+        var entity = _unitOfWork.ProductRepository.GetById(x => x.Id == id, includeProperties: "Category");
 
-        if (product == null)
+        if (entity == null)
         {
-            return NotFound();
+            return Json(new { success = false, message = "Error while deleting product." });
         }
 
-        return View(product);
-    }
-    [HttpPost]
-    public IActionResult Delete(Product obj)
-    {
-        _unitOfWork.ProductRepository.Remove(obj);
+
+        string wwwRootPath = _webHostEnvironment.WebRootPath;
+        var oldImagePath = Path.Combine(wwwRootPath, entity.ImageUrl.TrimStart('\\'));
+
+        if (System.IO.File.Exists(oldImagePath))
+        {
+            System.IO.File.Delete(oldImagePath);
+        }
+
+        _unitOfWork.ProductRepository.Remove(entity);
         _unitOfWork.Save();
-        TempData["success"] = "Product Deleted Successfully!";
-        return RedirectToAction("Index");
+
+        return Json(new { success = true, message = "Successfully deleting product." });
+
     }
     #endregion
 }
