@@ -31,8 +31,7 @@ public class ProductController : Controller
     {
         ProductVM productVM = new()
         {
-            CategoryList = _unitOfWork.CategoryRepository
-            .GetAll().Select(x => new SelectListItem
+            CategoryList = _unitOfWork.CategoryRepository.GetAll().Select(x => new SelectListItem
             {
                 Text = x.CategoryName,
                 Value = x.Id.ToString()
@@ -41,21 +40,18 @@ public class ProductController : Controller
             Product = new Product()
         };
 
-        if (id == null)
-        {
-            return View(productVM);
-        }
-        else
+        if (id.HasValue)
         {
             productVM.Product = _unitOfWork.ProductRepository.GetById(x => x.Id == id);
-            return View(productVM);
         }
+
+        return View(productVM);
     }
 
     [HttpPost]
     public IActionResult Upsert(ProductVM obj, IFormFile? file)
     {
-        if (_unitOfWork.ProductRepository.GetAll().Any(x => x.Title.Equals(obj.Product.Title, StringComparison.CurrentCultureIgnoreCase)))
+        if (_unitOfWork.ProductRepository.GetAll().Any(x => x.Id != obj.Product.Id && x.Title.Equals(obj.Product.Title, StringComparison.CurrentCultureIgnoreCase)))
         {
             ModelState.AddModelError("Title", "Title already exists");
         }
@@ -68,21 +64,46 @@ public class ProductController : Controller
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 string productPath = Path.Combine(wwwRootPath, @"images\product\");
 
-                using (var fileStream = new FileStream(Path.Combine(productPath, fileName),FileMode.Create))
+                if (!string.IsNullOrEmpty(obj.Product.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(wwwRootPath, obj.Product.ImageUrl.TrimStart('\\'));
+
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
                 {
                     file.CopyTo(fileStream);
                 }
 
-                obj.Product.ImageUrl = @"images\product\" + fileName;
+                obj.Product.ImageUrl = @"\images\product\" + fileName;
             }
 
-            _unitOfWork.ProductRepository.Add(obj.Product);
+            if (obj.Product.Id == Guid.Empty)
+            {
+                _unitOfWork.ProductRepository.Add(obj.Product);
+                TempData["success"] = "Product Created Successfully!";
+            }
+            else
+            {
+                _unitOfWork.ProductRepository.Update(obj.Product);
+                TempData["success"] = "Product Updated Successfully!";
+            }
+
             _unitOfWork.Save();
-            TempData["success"] = "Product Created Successfully!";
             return RedirectToAction("Index");
         }
 
-        return View();
+        obj.CategoryList = _unitOfWork.CategoryRepository.GetAll().Select(x => new SelectListItem
+        {
+            Text = x.CategoryName,
+            Value = x.Id.ToString()
+        });
+
+        return View(obj);
     }
     #endregion
 

@@ -11,7 +11,7 @@ builder.Services.AddControllersWithViews();
 //Configure DbContext to ApplicationDbContext and set sqlServer as Database then set connection strings
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 
