@@ -11,7 +11,7 @@ using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using EcommerceWEB.DataAccess.Repository.IRepo;
-using EcommerceWEB.Models;
+using EcommerceWEB.Models.Models;
 using EcommerceWEB.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -143,7 +143,7 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
                     Text = x,
                     Value = x
                 }),
-                CompanyList = _unitOfWork.CompanyRepository.GetAll(null).Select(x => new SelectListItem
+                CompanyList = _unitOfWork.CompanyRepository.GetAll(null, null).Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.Id.ToString()

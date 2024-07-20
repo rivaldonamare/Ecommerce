@@ -4,7 +4,7 @@ namespace EcommerceWEB.DataAccess.Repository.IRepo;
 
 public interface IRepositroy<T> where T : class
 {
-    IEnumerable<T> GetAll(string includeProperties);
+    IEnumerable<T> GetAll(string includeProperties, Expression<Func<T, bool>> filter);
     T GetById(Expression<Func<T, bool>> filter, string includeProperties);
     void Add(T entity);
     void Remove(T entity);

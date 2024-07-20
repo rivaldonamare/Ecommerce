@@ -9,12 +9,16 @@ public class UnitOfWork : IUnitOfWork
     public ICategoryRepository CategoryRepository { get; private set; }
     public IProductRepository ProductRepository { get; private set; }
     public ICompanyRepository CompanyRepository { get; private set; }
+    public IShoppingCartRepository ShoppingCartRepository { get; private set; }
+    public IApplicationUserRepository ApplicationUserRepository { get; private set; }
     public UnitOfWork(ApplicationDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         CategoryRepository = new CategoryRepository(_context);
         ProductRepository = new ProductRepository(_context);
         CompanyRepository = new CompanyRepository(_context);
+        ShoppingCartRepository = new ShoppingCartRepository(_context);
+        ApplicationUserRepository = new ApplicationUserRepository(_context);
     }
    
 

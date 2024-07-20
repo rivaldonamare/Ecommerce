@@ -1,5 +1,4 @@
-﻿using EcommerceWEB.Models;
-using EcommerceWEB.Models.Models;
+﻿using EcommerceWEB.Models.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Product> Products { get; set; }
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<Company> Companies { get; set; }
+    public DbSet<ShoppingCart> ShoppingCarts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

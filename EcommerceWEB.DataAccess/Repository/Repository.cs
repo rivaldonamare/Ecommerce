@@ -21,9 +21,14 @@ public class Repository<T> : IRepositroy<T> where T : class
         dbSet.Add(entity);
     }
 
-    public IEnumerable<T> GetAll(string includeProperties)
+    public IEnumerable<T> GetAll(string includeProperties, Expression<Func<T, bool>> filter)
     {
         IQueryable<T> query = dbSet;
+
+        if (filter != null)
+        {
+            query = query.Where(filter);
+        }
 
         if (includeProperties != null)
         {

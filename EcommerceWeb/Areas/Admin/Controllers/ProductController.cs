@@ -24,7 +24,7 @@ public class ProductController : Controller
     #region Fetch Product
     public IActionResult Index()
     {
-        List<Product> objProductList = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category").OrderBy(x => x.Title).ToList();
+        List<Product> objProductList = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category", null).OrderBy(x => x.Title).ToList();
         return View(objProductList);
     }
     #endregion
@@ -34,7 +34,7 @@ public class ProductController : Controller
     {
         ProductVM productVM = new()
         {
-            CategoryList = _unitOfWork.CategoryRepository.GetAll(null).Select(x => new SelectListItem
+            CategoryList = _unitOfWork.CategoryRepository.GetAll(null, null).Select(x => new SelectListItem
             {
                 Text = x.CategoryName,
                 Value = x.Id.ToString()
@@ -54,7 +54,7 @@ public class ProductController : Controller
     [HttpPost]
     public IActionResult Upsert(ProductVM obj, IFormFile file)
     {
-        if (_unitOfWork.ProductRepository.GetAll(null).Any(x => x.Id != obj.Product.Id && x.Title.Equals(obj.Product.Title, StringComparison.CurrentCultureIgnoreCase)))
+        if (_unitOfWork.ProductRepository.GetAll(null, null).Any(x => x.Id != obj.Product.Id && x.Title.Equals(obj.Product.Title, StringComparison.CurrentCultureIgnoreCase)))
         {
             ModelState.AddModelError("Title", "Title already exists");
         }
@@ -110,7 +110,7 @@ public class ProductController : Controller
     [HttpGet]
     public ActionResult GetAll()
     {
-        List<Product> objProductList = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category").OrderBy(x => x.Title).ToList();
+        List<Product> objProductList = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category", null).OrderBy(x => x.Title).ToList();
         return Json(new { data = objProductList });
     }
 

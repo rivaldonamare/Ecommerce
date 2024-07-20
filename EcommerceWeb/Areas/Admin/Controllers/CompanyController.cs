@@ -18,7 +18,7 @@ public class CompanyController : Controller
     }
     public IActionResult Index()
     {
-        List<Company> objCompanyList = _unitOfWork.CompanyRepository.GetAll(null).OrderBy(x => x.Name).ToList();
+        List<Company> objCompanyList = _unitOfWork.CompanyRepository.GetAll(null, null).OrderBy(x => x.Name).ToList();
         return View(objCompanyList);
     }
 
@@ -41,7 +41,7 @@ public class CompanyController : Controller
     [HttpPost]
     public IActionResult Upsert(CompanyVM obj)
     {
-        if (_unitOfWork.ProductRepository.GetAll(null).Any(x => x.Id != obj.Company.Id && x.Title.Equals(obj.Company.Name, StringComparison.CurrentCultureIgnoreCase)))
+        if (_unitOfWork.ProductRepository.GetAll(null, null).Any(x => x.Id != obj.Company.Id && x.Title.Equals(obj.Company.Name, StringComparison.CurrentCultureIgnoreCase)))
         {
             ModelState.AddModelError("Title", "Title already exists");
         }
@@ -71,7 +71,7 @@ public class CompanyController : Controller
     [HttpGet]
     public ActionResult GetAll()
     {
-        List<Company> objCompanyList = _unitOfWork.CompanyRepository.GetAll(null).OrderBy(x => x.Name).ToList();
+        List<Company> objCompanyList = _unitOfWork.CompanyRepository.GetAll(null, null).OrderBy(x => x.Name).ToList();
         return Json(new { data = objCompanyList });
     }
 
