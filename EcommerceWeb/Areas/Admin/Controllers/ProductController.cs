@@ -100,12 +100,6 @@ public class ProductController : Controller
             return RedirectToAction("Index");
         }
 
-       /* obj.CategoryList = _unitOfWork.CategoryRepository.GetAll(includeProperties: "Category").Select(x => new SelectListItem
-        {
-            Text = x.CategoryName,
-            Value = x.Id.ToString()
-        });*/
-
         return View(obj);
     }
     #endregion

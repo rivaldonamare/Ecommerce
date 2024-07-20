@@ -42,7 +42,7 @@ public class Repository<T> : IRepositroy<T> where T : class
         {
             return query.Include(includeProperties).SingleOrDefault();
         }
-        return query.Include(includeProperties).SingleOrDefault();
+        return query.SingleOrDefault();
     }
 
     public void Remove(T entity)
