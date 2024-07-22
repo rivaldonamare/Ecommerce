@@ -17,6 +17,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+    public DbSet<OrderHeader> OrderHeaders { get; set; }
+    public DbSet<OrderDetails> OrderDetails { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,7 +43,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                Price50 = 85,
                Price100 = 80,
                CategoryId = 1,
-               ImageUrl = ""
+               ImageUrl = "\\images\\product\\3075dc18-442e-40ab-94e9-6fa06e099c7d.jpg"
            },
             new Product
             {
@@ -55,7 +57,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 Price50 = 25,
                 Price100 = 20,
                 CategoryId = 2,
-                ImageUrl = ""
+                ImageUrl = "\\images\\product\\a512016e-a47b-4e9f-9828-671e4ff9c2bb.jpg"
             },
             new Product
             {
@@ -69,7 +71,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 Price50 = 40,
                 Price100 = 35,
                 CategoryId = 3,
-                ImageUrl = ""
+                ImageUrl = "\\images\\product\\be8f6b36-ad4a-4603-b3c4-e854eb4ec3d1.jpg"
             });
     }
 }
