@@ -4,6 +4,8 @@ using EcommerceWEB.Models.ViewModels;
 using EcommerceWEB.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe.Checkout;
+using Stripe;
 using System.Security.Claims;
 
 namespace EcommerceWeb.Areas.Customer.Controllers;
@@ -112,11 +114,70 @@ public class CartController : Controller
 
         _unitOfWork.Save();
 
+        if(applicationUser.CompanyId == null)
+        {
+            var domain = "https://localhost:7084/";
+            var options = new SessionCreateOptions
+            {
+                SuccessUrl = domain + $"customer/cart/OrderConfrimation?id={ShoppingCartVM.OrderHeader.Id}",
+                CancelUrl = domain + $"customer/cart/index",
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment"
+            };
+
+            foreach (var item in ShoppingCartVM.ShoppingCartList)
+            {
+                var sessionLineItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(item.Price * 100),
+                        Currency = "idr",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Product.Title
+                        }
+                    },
+                    Quantity = item.Count
+                };
+                options.LineItems.Add(sessionLineItem);
+            }
+
+
+            var service = new SessionService();
+            Session session = service.Create(options);
+
+            _unitOfWork.OrderHeaderRepository.UpdateStripePaymentId(ShoppingCartVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
+            _unitOfWork.Save();
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+        }
+
         return RedirectToAction(nameof(OrderConfrimation), new { id = ShoppingCartVM.OrderHeader.Id });
     }
 
     public IActionResult OrderConfrimation(Guid id)
     {
+        OrderHeader orderHeader = _unitOfWork.OrderHeaderRepository.GetById(u => u.Id == id, includeProperties: "ApplicationUser");
+
+        if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment)
+        {
+            // This is an order by customer
+            var service = new SessionService();
+            Session session = service.Get(orderHeader.SessionId);
+
+            if (session.PaymentStatus.ToLower() == "paid")
+            {
+                _unitOfWork.OrderHeaderRepository.UpdateStripePaymentId(id, session.Id, session.PaymentIntentId);
+                _unitOfWork.OrderHeaderRepository.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
+                _unitOfWork.Save();
+
+                List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCartRepository.GetAll(null, u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+                _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCarts);
+                _unitOfWork.Save();
+            }
+        }
+
         return View(id);
     }
 
