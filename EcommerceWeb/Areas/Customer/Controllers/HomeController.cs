@@ -1,5 +1,6 @@
 using EcommerceWEB.DataAccess.Repository.IRepo;
 using EcommerceWEB.Models.Models;
+using EcommerceWEB.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -21,6 +22,14 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+        if(claim != null)
+        {
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(null, x => x.ApplicationUserId == claim.Value).Count());
+        }
+
         IEnumerable<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties:"Category", null);
         return View(products);
     }
@@ -50,13 +59,16 @@ public class HomeController : Controller
         {
             cartFromDb.Count += shoppingCart.Count;
             _unitOfWork.ShoppingCartRepository.Update(cartFromDb);
+            _unitOfWork.Save();
         }
         else
         {
             _unitOfWork.ShoppingCartRepository.Add(shoppingCart);
+            _unitOfWork.Save();
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(null, x => x.ApplicationUserId == userId).Count());
         }
 
-        _unitOfWork.Save();
+        TempData["success"] = "Cart Updated Successfully";
 
         return RedirectToAction("Index");
     }

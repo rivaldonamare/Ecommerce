@@ -176,6 +176,7 @@ public class CartController : Controller
                 _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCarts);
                 _unitOfWork.Save();
             }
+            HttpContext.Session.Clear();
         }
 
         return View(id);
@@ -195,6 +196,7 @@ public class CartController : Controller
         var cart = _unitOfWork.ShoppingCartRepository.GetById(x => x.Id == cartId, null);
         if(cart.Count <= 1)
         {
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(null, x => x.ApplicationUserId == cart.ApplicationUserId).Count() - 1);
             _unitOfWork.ShoppingCartRepository.Remove(cart);
         }
         else
@@ -210,6 +212,8 @@ public class CartController : Controller
     public IActionResult Remove(Guid cartId)
     {
         var cart = _unitOfWork.ShoppingCartRepository.GetById(x => x.Id == cartId, null);
+
+        HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(null, x => x.ApplicationUserId == cart.ApplicationUserId).Count() -1 );
        
         _unitOfWork.ShoppingCartRepository.Remove(cart);
         

@@ -20,3 +20,78 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.login-card {
+    max-width: 1000px;
+    margin: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-header {
+    background-color: #6f42c1;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    color: white;
+    padding: 1rem;
+}
+
+.login-body {
+    padding: 2rem;
+    background-color: #1a1a2e;
+}
+
+.login-footer {
+    padding: 1rem;
+    text-align: center;
+}
+
+.login-button {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: none;
+}
+
+.login-button-facebook {
+    background-color: #3b5998;
+    color: white;
+}
+
+.login-button-primary {
+    background-color: #6f42c1;
+    color: white;
+}
+
+.login-button:hover {
+    opacity: 0.9;
+}
+
+.login-link {
+    color: #00aaff;
+}
+
+.divider-text {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+    .divider-text::before,
+    .divider-text::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: #ddd;
+        margin: 0 1rem;
+    }
+
+    .divider-text span {
+        background-color: #1a1a2e;
+        color: #ddd;
+        padding: 0 1rem;
+    }
+
