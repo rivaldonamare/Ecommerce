@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using EcommerceWEB.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Stripe;
+using EcommerceWEB.DataAccess.DBInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,7 +40,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+builder.Services.AddScoped<IDBInitializer, DBInitializer>();
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
@@ -60,6 +61,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
+SeedDataabase();
 app.MapRazorPages();
 
 app.MapControllerRoute(
@@ -67,3 +69,11 @@ app.MapControllerRoute(
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+void SeedDataabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDBInitializer>();
+        dbInitializer.Intializer();
+    }
+}

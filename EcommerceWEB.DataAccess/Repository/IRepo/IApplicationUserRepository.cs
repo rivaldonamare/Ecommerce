@@ -4,4 +4,5 @@ namespace EcommerceWEB.DataAccess.Repository.IRepo;
 
 public interface IApplicationUserRepository : IRepositroy<ApplicationUser>
 {
+    void Update(ApplicationUser applicationUser);
 }
