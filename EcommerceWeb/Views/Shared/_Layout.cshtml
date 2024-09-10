@@ -82,17 +82,36 @@
 
     <footer class="border-top footer text-muted">
         <div class="text-center">
-            &copy; @DateTime.Now.Year - EcommerceWeb  <a href="https://rivaldonamare.github.io/portofolio/" target="_blank">rivaldonamare</a>
+            &copy; @DateTime.Now.Year - EcommerceWeb  <a href="https://rivaldonamare.github.io/portofolio/" target="_blank" rel="noopener">rivaldonamare</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"
+            integrity="sha384-JzTKjFZcYISeHjKzJePqsDxFMxekQ0F15U9QWRsT7+qjKdeknP1yVJHd8OUz1Gy9"
+            crossorigin="anonymous">
+    </script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="//cdn.datatables.net/2.1.0/js/dataTables.min.js" asp-append-version="true"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.tiny.cloud/1/6809tp8sid7tzaaze3c87ovis2wjmn7ug9viwegwt9667ewu/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <script src="https://cdn.datatables.net/2.1.0/js/dataTables.min.js"
+            integrity="sha384-QwEKZT9YTvYbURrbMmlKhKNMdFZcHlOtLiik9P4kDcnA7ABFrBTH1dpUwnEEMekg"
+            crossorigin="anonymous">
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
+            integrity="sha384-qIgKsYP2/JRNgZLo89zM4NU8jAsfu4o9yV4lVIBpHlcRYDJ5YqGj5bcTLCGY7v9b"
+            crossorigin="anonymous">
+    </script>
+
+    <script src="https://cdn.tiny.cloud/1/6809tp8sid7tzaaze3c87ovis2wjmn7ug9viwegwt9667ewu/tinymce/7/tinymce.min.js"
+            integrity="sha384-X2L2OYt+AJKu2dpcyyDYbkKrfYMaVUnmIS5cAbCgKkcRKmZzS3/DYtA4uDWum3Vv"
+            referrerpolicy="origin"
+            crossorigin="anonymous">
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
